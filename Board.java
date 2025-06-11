@@ -72,7 +72,7 @@ public class Board {  // save as "Board.java"
             return State.DRAW; // no empty cell, it's a draw
         }
     }
-
+//mk
     /** The board paints itself */
     public void paint() {
         for (int row = 0; row < ROWS; ++row) {

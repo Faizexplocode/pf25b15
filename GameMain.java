@@ -11,7 +11,7 @@ public class GameMain {
     private State currentState;
     /** The current player (of enum Seed) */
     private Seed  currentPlayer;
-
+//lp
     private static Scanner in = new Scanner(System.in);
 
     /** Constructor to setup the game */

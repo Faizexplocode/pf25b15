@@ -14,7 +14,7 @@ public class Cell {  // save as "Cell.java"
         this.col = col;
         this.content = Seed.NO_SEED;
     }
-
+//lk
     /** Reset the cell content to EMPTY, ready for a new game. */
     public void newGame() {
         this.content = Seed.NO_SEED;

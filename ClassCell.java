@@ -21,7 +21,7 @@ public class ClassCell {import java.awt.*;
             this.row = row;
             this.col = col;
             content = Seed.NO_SEED;
-        }
+        }//ll
 
         /** Reset this cell's content to EMPTY, ready for new game */
         public void newGame() {
