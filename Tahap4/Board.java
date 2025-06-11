@@ -1,6 +1,8 @@
+package Tahap4;
+
 import java.awt.*;
 /**
- * The Board class models the ROWS-by-COLS game board.
+ * The Tahap4.Board class models the ROWS-by-COLS game board.
  */
 public class Board {
     // Define named constants
@@ -15,7 +17,7 @@ public class Board {
     public static final int Y_OFFSET = 1;  // Fine tune for better display
 
     // Define properties (package-visible)
-    /** Composes of 2D array of ROWS-by-COLS Cell instances */
+    /** Composes of 2D array of ROWS-by-COLS Tahap4.Cell instances */
     Cell[][] cells;
 
     /** Constructor to initialize the game board */
