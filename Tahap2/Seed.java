@@ -5,12 +5,12 @@ package Tahap2;
  * 2. Cell content: takes value of CROSS, NOUGHT, or NO_SEED.
  *
  * We also attach a display icon (text or image) for each of the item,
- *   and define the related variable/constructor/getter.
+ * and define the related variable/constructor/getter.
  *
  * Ideally, we should define two enums with inheritance, which is,
- *  however, not supported.
+ * however, not supported.
  */
-public enum Seed {   // to save as "Seed.java"
+public enum Seed {    // to save as "Seed.java"
     CROSS("X"), NOUGHT("O"), NO_SEED(" ");
 
     // Private variable

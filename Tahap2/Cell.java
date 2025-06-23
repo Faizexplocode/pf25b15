@@ -23,7 +23,8 @@ public class Cell {  // save as "Cell.java"
 
     /** The cell paints itself */
     public void paint() {
-        // Retrieve the display icon (text) and print
+        // This paint method is now simplified.
+        // The actual color application happens in Board.paint() for full control of the board's look.
         String icon = this.content.getIcon();
         System.out.print(icon);
     }
