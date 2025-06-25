@@ -5,8 +5,8 @@ import javax.swing.ImageIcon;
 
 public enum Seed {
     NO_SEED(" ", null), // Sel kosong
-    CROSS("X", "/images/cross.jpg"),   // Gambar untuk pemain X
-    NOUGHT("O", "/images/not.jpeg");  // Gambar untuk pemain O
+    CROSS("X", "/images/cross.png"),   // Gambar untuk pemain X
+    NOUGHT("O", "/images/not.png");  // Gambar untuk pemain O
 
     private String displayName;
     private Image img = null;
