@@ -16,15 +16,15 @@ public class MySqlExample {
          userName = "avnadmin";
          password = "AVNS__1U8b5O6wsS8XHWggTz";
 
-        for (int i = 0; i < args.length - 1; i++) {
-            switch (args[i].toLowerCase(Locale.ROOT)) {
-                case "-host": host = args[++i]; break;
-                case "-username": userName = args[++i]; break;
-                case "-password": password = args[++i]; break;
-                case "-database": databaseName = args[++i]; break;
-                case "-port": port = args[++i]; break;
-            }
-        }
+//        for (int i = 0; i < args.length - 1; i++) {
+//            switch (args[i].toLowerCase(Locale.ROOT)) {
+//                case "-host": host = args[++i]; break;
+//                case "-username": userName = args[++i]; break;
+//                case "-password": password = args[++i]; break;
+//                case "-database": databaseName = args[++i]; break;
+//                case "-port": port = args[++i]; break;
+//            }
+//        }
         // JDBC allows to have nullable username and password
         if (host == null || port == null || databaseName == null) {
             System.out.println("Host, port, database information is required");
