@@ -1,79 +1,65 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class MainMenuPanel extends JPanel {
 
     public MainMenuPanel(GameMain gameMain) {
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
-        setBackground(Color.WHITE);  // hilangkan background gelap
+        setBackground(Color.WHITE);
 
-        // === Top Panel (title + gif) ===
-        JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-        topPanel.setOpaque(false);
-
-        JLabel titleLabel = new JLabel("Tic Tac Toe", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 32));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-
+        // Load the GIF from resources
+        ImageIcon gifIcon = loadFullScreenGif("images/welcome.gif");
         JLabel gifLabel = new JLabel();
         gifLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gifLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        try {
-            gifLabel.setIcon(new ImageIcon(getClass().getResource("images/welcome.gif")));
-        } catch (Exception e) {
-            gifLabel.setText("GIF not found");
-        }
+        gifLabel.setVerticalAlignment(SwingConstants.CENTER);
+        gifLabel.setIcon(gifIcon);
 
-        topPanel.add(titleLabel);
-        topPanel.add(gifLabel);
-
-        // === Button Panel ===
+        // Transparent panel for buttons over GIF
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(60, 20, 60, 20));
 
-        buttonPanel.add(createImageButton("/assets/btn_play.png", e -> gameMain.startVsPlayer()));
+        // Add buttons
+        buttonPanel.add(createMenuButton("Play vs Player", e -> gameMain.startVsPlayer()));
         buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(createImageButton("/assets/btn_ai.png", e -> gameMain.startVsAI()));
+        buttonPanel.add(createMenuButton("Play vs AI", e -> gameMain.startVsAI()));
         buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(createImageButton("/assets/btn_info.png", e -> gameMain.showInstructions()));
+        buttonPanel.add(createMenuButton("Petunjuk Permainan", e -> gameMain.showInstructions()));
         buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(createImageButton("/assets/btn_exit.png", e -> System.exit(0)));
+        buttonPanel.add(createMenuButton("Exit", e -> System.exit(0)));
 
-        add(topPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        // Container panel with overlay layout
+        JPanel overlay = new JPanel(new GridBagLayout());
+        overlay.setOpaque(false);
+        overlay.add(buttonPanel);
+
+        // Layered pane to combine GIF and overlay
+        JLayeredPane layeredPane = new JLayeredPane();
+        gifLabel.setBounds(0, 0, 400, 500); // Adjust as needed
+        overlay.setBounds(0, 0, 400, 500);
+
+        layeredPane.setPreferredSize(new Dimension(400, 500));
+        layeredPane.add(gifLabel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(overlay, JLayeredPane.PALETTE_LAYER);
+
+        add(layeredPane, BorderLayout.CENTER);
     }
 
-    private JButton createImageButton(String imagePath, ActionListener action) {
-        JButton button = new JButton();
-        try {
-            ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
-            button.setIcon(icon);
-        } catch (Exception e) {
-            button.setText("Button");
+    private ImageIcon loadFullScreenGif(String path) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL == null) {
+            System.err.println("GIF not found at: " + path);
+            return null;
         }
+        return new ImageIcon(imgURL);
+    }
 
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(false);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.addActionListener(action);
-
-        // Efek hover animasi sederhana
-        button.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                button.setLocation(button.getX(), button.getY() - 2);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button.setLocation(button.getX(), button.getY() + 2);
-            }
-        });
-
+    private JButton createMenuButton(String text, java.awt.event.ActionListener listener) {
+        JButton button = new JButton(text);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setMaximumSize(new Dimension(200, 40));
+        button.addActionListener(listener);
         return button;
     }
 }
