@@ -24,14 +24,13 @@ public class GameMain extends JFrame {
     private SubMenuPanel subMenuPanel;
     private GamePanelInternal gamePanelInternal;
     private JPanel instructionPanel;
-    private JPanel gameOverPanel;
-    private JLabel gameOverLabel;
+    private GameOverScorePanel gameOverPanel;
 
     public GameMain() {
         SoundEffect.initGame();
 
         setTitle(TITLE);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(400, 600);
         setLocationRelativeTo(null);
 
@@ -50,7 +49,12 @@ public class GameMain extends JFrame {
         subMenuPanel = new SubMenuPanel(this);
         gamePanelInternal = new GamePanelInternal();
         instructionPanel = createInstructionPanel();
-        gameOverPanel = createGameOverPanel();
+        gameOverPanel = new GameOverScorePanel();
+
+        // Tambahkan listener ke tombol-tombol GameOverPanel
+        gameOverPanel.addPlayAgainListener(e -> startGame());
+        gameOverPanel.addBackToMenuListener(e -> showMainMenu());
+        gameOverPanel.addExitGameListener(e -> System.exit(0));
 
         containerPanel.add(mainMenuPanel, "MENU");
         containerPanel.add(subMenuPanel, "SUB_MENU");
@@ -130,6 +134,7 @@ public class GameMain extends JFrame {
             SoundEffect.DIE.play();
             showPopupWinner();
         }
+
         currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
     }
 
@@ -162,7 +167,8 @@ public class GameMain extends JFrame {
             case NOUGHT_WON -> player2Name + " (O) Won!";
             default -> "";
         };
-        gameOverLabel.setText(msg);
+        gameOverPanel.setGameOverMessage(msg);
+        gameOverPanel.updateScore(currentState);
         cardLayout.show(containerPanel, "OVER");
     }
 
@@ -172,7 +178,6 @@ public class GameMain extends JFrame {
             setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2));
             setLayout(new BorderLayout());
 
-            // Panel atas kanan (tombol petunjuk)
             JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
             topPanel.setOpaque(false);
 
@@ -265,54 +270,6 @@ public class GameMain extends JFrame {
 
         panel.add(new JScrollPane(instructions), BorderLayout.CENTER);
         panel.add(back, BorderLayout.SOUTH);
-        return panel;
-    }
-
-    private JPanel createGameOverPanel() {
-        JPanel panel = new JPanel() {
-            private Image backgroundImage = new ImageIcon("images/gambar.gif").getImage();
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-        panel.setLayout(new GridBagLayout());
-
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setOpaque(false);
-
-        gameOverLabel = new JLabel("", SwingConstants.CENTER);
-        gameOverLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
-        gameOverLabel.setForeground(Color.WHITE);
-        gameOverLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        gameOverLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
-
-        JButton again = new JButton("Play Again");
-        again.setAlignmentX(Component.CENTER_ALIGNMENT);
-        again.setMaximumSize(new Dimension(200, 40));
-        again.addActionListener(e -> startGame());
-
-        JButton back = new JButton("Back to Menu");
-        back.setAlignmentX(Component.CENTER_ALIGNMENT);
-        back.setMaximumSize(new Dimension(200, 40));
-        back.addActionListener(e -> showMainMenu());
-
-        JButton exit = new JButton("Exit Game");
-        exit.setAlignmentX(Component.CENTER_ALIGNMENT);
-        exit.setMaximumSize(new Dimension(200, 40));
-        exit.addActionListener(e -> System.exit(0));
-
-        centerPanel.add(gameOverLabel);
-        centerPanel.add(Box.createVerticalStrut(10));
-        centerPanel.add(again);
-        centerPanel.add(Box.createVerticalStrut(10));
-        centerPanel.add(back);
-        centerPanel.add(Box.createVerticalStrut(10));
-        centerPanel.add(exit);
-
-        panel.add(centerPanel);
         return panel;
     }
 
