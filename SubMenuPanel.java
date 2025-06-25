@@ -1,9 +1,9 @@
-// SubMenuPanel.java (Ini adalah file yang harus Anda buat dan isi)
+// SubMenuPanel.java (NEW FILE!)
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class SubMenuPanel extends JPanel { // Pastikan nama kelas ini SubMenuPanel
+public class SubMenuPanel extends JPanel {
 
     private GameMain gameMain;
 

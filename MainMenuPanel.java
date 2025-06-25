@@ -1,76 +1,92 @@
+// MainMenuPanel.java
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class MainMenuPanel extends JPanel {
 
+    private GameMain gameMain;
+
     public MainMenuPanel(GameMain gameMain) {
+        this.gameMain = gameMain;
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
-        setBackground(Color.WHITE);  // hilangkan background gelap
+        setBackground(Color.WHITE);
 
-        // === Top Panel (title + gif) ===
-        JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-        topPanel.setOpaque(false);
-
-        JLabel titleLabel = new JLabel("Tic Tac Toe", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 32));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-
+        ImageIcon gifIcon = loadFullScreenGif("/images/welcome.gif");
         JLabel gifLabel = new JLabel();
         gifLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gifLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        try {
-            gifLabel.setIcon(new ImageIcon(getClass().getResource("images/welcome.gif")));
-        } catch (Exception e) {
-            gifLabel.setText("GIF not found");
+        gifLabel.setVerticalAlignment(SwingConstants.CENTER);
+        if (gifIcon != null) {
+            gifLabel.setIcon(gifIcon);
+        } else {
+            gifLabel.setText("Background GIF Not Found");
+            gifLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
         }
 
-        topPanel.add(titleLabel);
-        topPanel.add(gifLabel);
+        JPanel buttonOverlayPanel = new JPanel(new GridBagLayout());
+        buttonOverlayPanel.setOpaque(false);
 
-        // === Button Panel ===
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setOpaque(false);
+        JPanel buttonContainer = new JPanel();
+        buttonContainer.setOpaque(false);
+        buttonContainer.setLayout(new BoxLayout(buttonContainer, BoxLayout.Y_AXIS));
+        buttonContainer.setBorder(BorderFactory.createEmptyBorder(350, 20, 20, 20)); // Adjust padding
 
-        buttonPanel.add(createImageButton("/assets/btn_play.png", e -> gameMain.startVsPlayer()));
-        buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(createImageButton("/assets/btn_ai.png", e -> gameMain.startVsAI()));
-        buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(createImageButton("/assets/btn_info.png", e -> gameMain.showInstructions()));
-        buttonPanel.add(Box.createVerticalStrut(10));
-        buttonPanel.add(createImageButton("/assets/btn_exit.png", e -> System.exit(0)));
+        JButton btnStart = createMenuButton("Start", e -> gameMain.showSubMenu());
+        JButton btnExit = createMenuButton("Exit", e -> System.exit(0));
 
-        add(topPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        buttonContainer.add(btnStart);
+        buttonContainer.add(Box.createVerticalStrut(20));
+        buttonContainer.add(btnExit);
+
+        buttonOverlayPanel.add(buttonContainer);
+
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(400, 500)); // Ukuran preferensi menu
+
+        gifLabel.setBounds(0, 0, 400, 500);
+        buttonOverlayPanel.setBounds(0, 0, 400, 500);
+
+        layeredPane.add(gifLabel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(buttonOverlayPanel, JLayeredPane.PALETTE_LAYER);
+
+        add(layeredPane, BorderLayout.CENTER);
     }
 
-    private JButton createImageButton(String imagePath, ActionListener action) {
-        JButton button = new JButton();
+    private ImageIcon loadFullScreenGif(String path) {
         try {
-            ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
-            button.setIcon(icon);
+            java.net.URL imgURL = getClass().getResource(path);
+            if (imgURL == null) {
+                System.err.println("GIF not found at: " + path);
+                return null;
+            }
+            return new ImageIcon(imgURL);
         } catch (Exception e) {
-            button.setText("Button");
+            System.err.println("Error loading GIF: " + path + " - " + e.getMessage());
+            return null;
         }
+    }
 
-        button.setBorderPainted(false);
+    private JButton createMenuButton(String text, java.awt.event.ActionListener listener) {
+        JButton button = new JButton(text);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setMaximumSize(new Dimension(200, 50));
+        button.setPreferredSize(new Dimension(200, 50));
+        button.setFont(new Font("SansSerif", Font.BOLD, 18));
+        button.addActionListener(listener);
         button.setFocusPainted(false);
-        button.setContentAreaFilled(false);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.addActionListener(action);
+        button.setBackground(new Color(200, 220, 255));
+        button.setForeground(Color.BLACK);
+        button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
 
-        // Efek hover animasi sederhana
         button.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseEntered(MouseEvent e) {
-                button.setLocation(button.getX(), button.getY() - 2);
+                button.setBackground(new Color(150, 180, 255));
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
-                button.setLocation(button.getX(), button.getY() + 2);
+                button.setBackground(new Color(200, 220, 255));
             }
         });
 

@@ -1,6 +1,7 @@
-/**
- *  The enum State contains the various game states of the TTT game
- */
-public enum State {  // to save as "State.java"
-    PLAYING, DRAW, CROSS_WON, NOUGHT_WON
+// State.java
+public enum State {
+    PLAYING,      // Game sedang berjalan
+    DRAW,         // Game seri
+    CROSS_WON,    // Pemain X menang
+    NOUGHT_WON    // Pemain O menang
 }

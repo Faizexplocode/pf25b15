@@ -1,61 +1,49 @@
+// SoundEffect.java
+import javax.sound.sampled.*;
 import java.io.IOException;
 import java.net.URL;
-import javax.sound.sampled.*;
 
-/**
- * Enum ini mengelola semua efek suara dalam game, agar kode pemutar suara
- * terpisah dari logika permainan.
- */
 public enum SoundEffect {
-    WELCOME("audio/welcome.wav"),
-    CROSS_PLAY("audio/cross.wav"),
-    NOUGHT_PLAY("audio/not.wav"),
-    DIE("audio/die.wav");
-
-    // Volume level
-    public static enum Volume {
-        MUTE, LOW, MEDIUM, HIGH
-    }
-
-    public static Volume volume = Volume.LOW; // default volume
+    // Sesuaikan nama file dan kapitalisasi sesuai yang ada di folder 'audio' Anda
+    WELCOME("/audio/welcome.WAV"),
+    CROSS_PLAY("/audio/cross.WAV"),
+    NOUGHT_PLAY("/audio/not.wav"),
+    DIE("/audio/die.wav");
 
     private Clip clip;
 
-    /** Konstruktor enum untuk setiap efek suara */
-    private SoundEffect(String soundFileName) {
+    SoundEffect(String filename) {
         try {
-            URL url = this.getClass().getClassLoader().getResource(soundFileName);
+            URL url = getClass().getResource(filename); // Menggunakan getClass().getResource()
             if (url == null) {
-                throw new IllegalArgumentException("Sound file not found: " + soundFileName);
+                System.err.println("Sound file not found: " + filename);
+                throw new RuntimeException("Sound file not found: " + filename); // Melemparkan RuntimeException
             }
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | RuntimeException e) {
+            System.err.println("Error loading sound " + filename + ": " + e.getMessage());
+            clip = null; // Set clip ke null jika ada error
         }
     }
 
-    /** Mainkan efek suara dari awal */
     public void play() {
-        if (volume != Volume.MUTE && clip != null) {
-            if (clip.isRunning()) {
-                clip.stop(); // hentikan jika sedang berjalan
-            }
-            clip.setFramePosition(0); // rewind ke awal
-            clip.start();             // mulai mainkan
+        if (clip != null) {
+            if (clip.isRunning())
+                clip.stop();
+            clip.setFramePosition(0);
+            clip.start();
         }
     }
 
-    /** Hentikan suara jika sedang dimainkan */
     public void stop() {
         if (clip != null && clip.isRunning()) {
             clip.stop();
         }
     }
 
-    /** Preload semua efek suara */
     public static void initGame() {
-        values(); // akan memanggil konstruktor dari semua enum
+        values(); // Memuat semua klip suara saat game diinisialisasi (memanggil konstruktor setiap enum)
     }
 }

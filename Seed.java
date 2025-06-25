@@ -4,38 +4,30 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 public enum Seed {
-    NO_SEED(" ", null), // NO_SEED tanpa gambar
-    CROSS("X", "/images/cross.jpg"),   // <-- Tambahkan leading slash '/'
-    NOUGHT("O", "/images/not.jpeg");  // <-- Tambahkan leading slash '/'
+    NO_SEED(" ", null), // Sel kosong
+    CROSS("X", "/images/cross.jpg"),   // Gambar untuk pemain X
+    NOUGHT("O", "/images/not.jpeg");  // Gambar untuk pemain O
 
-    // Private variables
     private String displayName;
     private Image img = null;
 
-    // Constructor (must be private)
-    private Seed(String name, String imageFilename) {
+    private Seed(String name, String imagePath) {
         this.displayName = name;
 
-        if (imageFilename != null) {
+        if (imagePath != null) {
             try {
-                // Gunakan getClass().getResource() dengan leading slash untuk kejelasan path dari classpath root
-                URL imgURL = getClass().getResource(imageFilename); // <-- Ubah di sini
-                ImageIcon icon = null;
+                URL imgURL = getClass().getResource(imagePath); // Path dari root classpath
                 if (imgURL != null) {
-                    icon = new ImageIcon(imgURL);
+                    this.img = new ImageIcon(imgURL).getImage();
                 } else {
-                    System.err.println("Couldn't find file " + imageFilename);
-                }
-                if (icon != null) { // Pastikan icon tidak null sebelum mendapatkan image
-                    img = icon.getImage();
+                    System.err.println("Image not found: " + imagePath);
                 }
             } catch (Exception e) {
-                System.err.println("Error loading image " + imageFilename + ": " + e.getMessage());
+                System.err.println("Error loading image " + imagePath + ": " + e.getMessage());
             }
         }
     }
 
-    // Public getters
     public String getDisplayName() {
         return displayName;
     }
