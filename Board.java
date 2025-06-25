@@ -1,3 +1,4 @@
+// Board.java (UPDATED)
 import java.awt.*;
 /**
  * The Board class models the ROWS-by-COLS game board.
@@ -6,13 +7,15 @@ public class Board {
     // Define named constants
     public static final int ROWS = 3;  // ROWS x COLS cells
     public static final int COLS = 3;
-    // Define named constants for drawing
-    public static final int CANVAS_WIDTH = Cell.SIZE * COLS;  // the drawing canvas
-    public static final int CANVAS_HEIGHT = Cell.SIZE * ROWS;
+
+    // Define CANVAS_WIDTH dan CANVAS_HEIGHT secara eksplisit
+    public static final int CANVAS_WIDTH = 400;  // the drawing canvas will be 400px wide
+    public static final int CANVAS_HEIGHT = 500; // the drawing canvas will be 500px high
+
     public static final int GRID_WIDTH = 8;  // Grid-line's width
     public static final int GRID_WIDTH_HALF = GRID_WIDTH / 2; // Grid-line's half-width
     public static final Color COLOR_GRID = Color.LIGHT_GRAY;  // grid lines
-    public static final int Y_OFFSET = 1;  // Fine tune for better display
+    public static final int Y_OFFSET = 1;  // Fine tune for better display (might not be needed with dynamic cell sizing)
 
     // Define properties (package-visible)
     /** Composes of 2D array of ROWS-by-COLS Cell instances */
@@ -28,9 +31,7 @@ public class Board {
         cells = new Cell[ROWS][COLS]; // allocate the array
         for (int row = 0; row < ROWS; ++row) {
             for (int col = 0; col < COLS; ++col) {
-                // Allocate element of the array
                 cells[row][col] = new Cell(row, col);
-                // Cells are initialized in the constructor
             }
         }
     }
@@ -45,9 +46,9 @@ public class Board {
     }
 
     /**
-     *  The given player makes a move on (selectedRow, selectedCol).
-     *  Update cells[selectedRow][selectedCol]. Compute and return the
-     *  new game state (PLAYING, DRAW, CROSS_WON, NOUGHT_WON).
+     * The given player makes a move on (selectedRow, selectedCol).
+     * Update cells[selectedRow][selectedCol]. Compute and return the
+     * new game state (PLAYING, DRAW, CROSS_WON, NOUGHT_WON).
      */
     public State stepGame(Seed player, int selectedRow, int selectedCol) {
         // Update game board
@@ -60,14 +61,14 @@ public class Board {
                 || cells[0][selectedCol].content == player // 3-in-the-column
                 && cells[1][selectedCol].content == player
                 && cells[2][selectedCol].content == player
-                || selectedRow == selectedCol     // 3-in-the-diagonal
-                && cells[0][0].content == player
-                && cells[1][1].content == player
-                && cells[2][2].content == player
-                || selectedRow + selectedCol == 2 // 3-in-the-opposite-diagonal
-                && cells[0][2].content == player
-                && cells[1][1].content == player
-                && cells[2][0].content == player) {
+                || (selectedRow == selectedCol &&    // 3-in-the-diagonal
+                cells[0][0].content == player &&
+                cells[1][1].content == player &&
+                cells[2][2].content == player)
+                || (selectedRow + selectedCol == 2 && // 3-in-the-opposite-diagonal
+                cells[0][2].content == player &&
+                cells[1][1].content == player &&
+                cells[2][0].content == player)) {
             return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
         } else {
             // Nobody win. Check for DRAW (all cells occupied) or PLAYING.
@@ -86,14 +87,19 @@ public class Board {
     public void paint(Graphics g) {
         // Draw the grid-lines
         g.setColor(COLOR_GRID);
+
+        // Hitung lebar dan tinggi sel secara dinamis
+        int cellWidth = CANVAS_WIDTH / COLS;
+        int cellHeight = CANVAS_HEIGHT / ROWS;
+
         for (int row = 1; row < ROWS; ++row) {
-            g.fillRoundRect(0, Cell.SIZE * row - GRID_WIDTH_HALF,
-                    CANVAS_WIDTH - 1, GRID_WIDTH,
+            g.fillRoundRect(0, cellHeight * row - GRID_WIDTH_HALF,
+                    CANVAS_WIDTH, GRID_WIDTH, // Lebar grid line penuh CANVAS_WIDTH
                     GRID_WIDTH, GRID_WIDTH);
         }
         for (int col = 1; col < COLS; ++col) {
-            g.fillRoundRect(Cell.SIZE * col - GRID_WIDTH_HALF, 0 + Y_OFFSET,
-                    GRID_WIDTH, CANVAS_HEIGHT - 1,
+            g.fillRoundRect(cellWidth * col - GRID_WIDTH_HALF, 0, // Tinggi grid line penuh CANVAS_HEIGHT
+                    GRID_WIDTH, CANVAS_HEIGHT,
                     GRID_WIDTH, GRID_WIDTH);
         }
 
