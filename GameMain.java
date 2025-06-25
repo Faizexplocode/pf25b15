@@ -1,4 +1,3 @@
-// GameMain.java (Lengkap dengan Game Over Background dan Komponen Tengah)
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -172,7 +171,31 @@ public class GameMain extends JFrame {
             setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + statusBar.getPreferredSize().height));
             setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2));
             setLayout(new BorderLayout());
-            add(statusBar, BorderLayout.PAGE_END);
+
+            // Panel atas kanan (tombol petunjuk)
+            JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+            topPanel.setOpaque(false);
+
+            JButton btnHelp = new JButton("?");
+            btnHelp.setFont(new Font("SansSerif", Font.BOLD, 14));
+            btnHelp.setMargin(new Insets(2, 8, 2, 8));
+            btnHelp.setFocusPainted(false);
+            btnHelp.setToolTipText("Petunjuk permainan");
+            btnHelp.addActionListener(e -> {
+                JOptionPane.showMessageDialog(GameMain.this, """
+                    📜 Petunjuk Permainan:
+
+                    1. Dua pemain atau lawan AI.
+                    2. Pemain pertama: X, pemain kedua: O.
+                    3. Klik kotak untuk menandai giliranmu.
+                    4. 3 simbol sejajar = Menang!
+                    5. Papan penuh tanpa pemenang = Seri.
+                    """, "Petunjuk", JOptionPane.INFORMATION_MESSAGE);
+            });
+
+            topPanel.add(btnHelp);
+            add(topPanel, BorderLayout.NORTH);
+            add(statusBar, BorderLayout.SOUTH);
 
             addMouseListener(new MouseAdapter() {
                 @Override
@@ -201,9 +224,8 @@ public class GameMain extends JFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             setBackground(COLOR_BG);
-            if (board != null) {
-                board.paint(g);
-            }
+            if (board != null) board.paint(g);
+
             if (statusBar != null) {
                 if (currentState == State.PLAYING) {
                     statusBar.setForeground(Color.BLACK);
